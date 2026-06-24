@@ -1,0 +1,149 @@
+# =========================================================
+# Python / FastAPI
+# =========================================================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+.cache/
+
+# Type checkers
+.mypy_cache/
+.pyre/
+.pytype/
+
+# Ruff
+.ruff_cache/
+
+# Pyright
+.pyright/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# SQLite databases
+*.sqlite3
+*.db
+
+# FastAPI uploads/temp files
+uploads/
+media/
+tmp/
+temp/
+
+# =========================================================
+# Alembic
+# =========================================================
+
+# Ignore generated caches only
+alembic/__pycache__/
+
+# =========================================================
+# VS Code / IDEs
+# =========================================================
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================================================
+# OS Files
+# =========================================================
+
+.DS_Store
+Thumbs.db
+
+# =========================================================
+# React / Node.js
+# =========================================================
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+
+# Vite cache
+.vite/
+
+# Parcel cache
+.parcel-cache/
+
+# Next.js
+.next/
+
+# Nuxt
+.nuxt/
+
+# Coverage
+coverage/
+
+# =========================================================
+# Environment files
+# =========================================================
+
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================================================
+# Lock files (optional)
+# Keep these if you want reproducible builds.
+# =========================================================
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# =========================================================
+# Docker
+# =========================================================
+
+docker-compose.override.yml
+
+# =========================================================
+# Miscellaneous
+# =========================================================
+
+*.pid
+*.seed
+*.out
