@@ -1,7 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.config import settings
 
+from app.core.config import settings
+from app.db.database import create_tables
+from app.routers import story, job, auth
+
+
+create_tables()
 
 
 app = FastAPI(
@@ -20,6 +25,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(story.router, prefix=settings.API_PREFIX )
+app.include_router(job.router, prefix=settings.API_PREFIX)
+app.include_router(auth.router, prefix=settings.API_PREFIX)
 
 if __name__ == '__main__':
     import uvicorn

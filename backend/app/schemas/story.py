@@ -23,7 +23,7 @@ class CompleteStoryNodeResponse(StoryNodeBase):
 
 class StoryBase(BaseModel):
     title: str
-    session_id: Optional[str] = True
+    session_id: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -33,7 +33,7 @@ class CreateStoryRequest(BaseModel):
     theme: str
 
 
-class CompleteStoryResonse(StoryBase):
+class CompleteStoryResponse(StoryBase):
     id: int
     created_at: datetime
     root_node: CompleteStoryNodeResponse

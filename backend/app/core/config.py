@@ -6,12 +6,12 @@ from pydantic import field_validator
 class Settings(BaseSettings):
     API_PREFIX: str = '/api'
     DEBUG: bool = False
-
     DATABASE_URL: str
-
     ALLOWED_ORIGINS: str = ""
-
-    OPEN_API_KEY: str
+    GROQ_API_KEY: str
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
 
     @field_validator("ALLOWED_ORIGINS")
