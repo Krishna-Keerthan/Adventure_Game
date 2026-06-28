@@ -7,7 +7,7 @@ from langchain_core.prompts import ChatPromptTemplate
 
 from app.core.prompts import STORY_PROMPT, json_structure
 from app.models.story import Story, StoryNode
-from app.core.models import StoryLLMResponse, StoryNodeLLM
+from app.core.storyDtos import StoryLLMResponse, StoryNodeLLM
 
 load_dotenv()
 

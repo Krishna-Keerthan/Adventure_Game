@@ -1,5 +1,5 @@
 from typing import List, Optional, Dict
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 class StoryOptionsSchema(BaseModel):
@@ -14,19 +14,17 @@ class StoryNodeBase(BaseModel):
     is_winning_ending: bool = False
 
 class CompleteStoryNodeResponse(StoryNodeBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     options: List[StoryOptionsSchema] = []
 
-    class Config:
-        from_attributes = True
-
 
 class StoryBase(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     title: str
     session_id: Optional[str] = None
-
-    class Config:
-        from_attributes = True
 
 
 class CreateStoryRequest(BaseModel):
@@ -34,10 +32,10 @@ class CreateStoryRequest(BaseModel):
 
 
 class CompleteStoryResponse(StoryBase):
+
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     created_at: datetime
     root_node: CompleteStoryNodeResponse
     all_nodes: Dict[int, CompleteStoryNodeResponse]
-
-    class Config:
-        from_attributes = True

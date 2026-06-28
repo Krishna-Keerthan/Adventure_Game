@@ -19,13 +19,13 @@ def register(request: UserRegisterRequest, db: Session = Depends(get_db)):
     if db.query(User).filter(User.email == request.email).first():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already exists."
+            detail="Email already registered"
         )
     
     if db.query(User).filter(User.username == request.username).first():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already exists."
+            detail="Username already taken"
         )
     
     user = User(

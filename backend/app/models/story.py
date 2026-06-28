@@ -11,19 +11,10 @@ class Story(Base):
     session_id = Column(String, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    nodes = relationship("StoryNode", back_populates="story")
+    nodes = relationship("StoryNode", back_populates="story", cascade="all, delete-orphan")
+    game_sessions = relationship("GameSession", back_populates="story")
 
 class StoryNode(Base):
-    """
-    id = Column(Integer , primary_key=True, index=True) 
-    story_id = Column(Integer, ForeignKey("stories.id") , index=True)   
-    content = Column(String)    
-    is_root = Column(Boolean, default=False)    
-    is_ending = Column(Boolean, default=False)  
-    is_winning_ending = Column(Boolean, default=False)  
-    options = Column(JSON, default=list)    
-    story = relationship("Story" , back_populates="nodes")
-    """
     
     __tablename__ = "story_nodes"
     

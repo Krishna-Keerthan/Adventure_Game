@@ -1,6 +1,7 @@
 from sqlalchemy import Column , Integer, String, DateTime
 from sqlalchemy.sql import func
 from app.db.database import Base
+from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "users"
@@ -11,4 +12,5 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+    game_sessions = relationship("GameSession", back_populates="user")
     
