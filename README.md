@@ -4,6 +4,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.13-blue?logo=python)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.138-009688?logo=fastapi)
+![LangChain](https://img.shields.io/badge/LangChain-0.3-1C3C3C?logo=langchain&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -79,6 +80,7 @@ Repeat until is_ending = true  →  win or lose screen
 | Layer | Technology | Why |
 |---|---|---|
 | Backend | FastAPI | Async, type-safe, automatic OpenAPI docs |
+| LLM Framework | Langchain | Prompt orchestration, structured output parsing, and LLM abstraction |
 | LLM | Groq (llama-3.3-70b-versatile) | Fast inference, reliable JSON output |
 | Database | SQLite (dev) / PostgreSQL (prod) | Zero config locally, production-grade on Render |
 | Auth | JWT + bcrypt | Stateless, secure, industry standard |
@@ -266,143 +268,41 @@ Tests use an in-memory SQLite database and never call the Groq API.
 All 48 tests pass on a clean checkout.
 
 ---
-
 ## Deployment
 
-### Deploy Backend to Render
+### Backend
 
-#### Step 1 — Push your code to GitHub
+* Containerized with Docker
+* Deployed on **Render**
+* Uses **PostgreSQL** for persistent storage
+* Database migrations are applied automatically with **Alembic** during deployment
 
-Make sure your repository has the `backend/` folder with `Dockerfile` and `docker-compose.yml` committed.
+### Frontend
 
-#### Step 2 — Create a PostgreSQL database on Render
+* Deployed on **Vercel**
+* Built with **React + Vite**
+* Configured for client-side routing and production API integration
 
-1. Go to [dashboard.render.com](https://dashboard.render.com)
-2. Click **New +** → **PostgreSQL**
-3. Fill in:
-   - **Name:** `adventure-game-db`
-   - **Region:** Choose closest to your users
-   - **Plan:** Free (expires after 90 days) or Starter for production
-4. Click **Create Database**
-5. Once created, copy the **Internal Database URL** — you'll need it in Step 4
+### Environment Variables
 
-#### Step 3 — Create a Web Service on Render
+#### Backend
 
-1. Click **New +** → **Web Service**
-2. Connect your GitHub account and select your repository
-3. Configure:
-   - **Name:** `adventure-game-api`
-   - **Region:** Same as your database
-   - **Root Directory:** `backend`
-   - **Environment:** `Docker`
-   - **Branch:** `main`
-4. Click **Create Web Service** — Render will detect the `Dockerfile` automatically
+| Variable                      | Description               |
+| ----------------------------- | ------------------------- |
+| `DATABASE_URL`                | PostgreSQL connection URL |
+| `SECRET_KEY`                  | JWT signing secret        |
+| `GROQ_API_KEY`                | Groq API key              |
+| `ALLOWED_ORIGINS`             | Allowed frontend origins  |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | JWT expiration time       |
+| `DEBUG`                       | Debug mode                |
 
-#### Step 4 — Set environment variables
+#### Frontend
 
-In your Web Service dashboard → **Environment** tab, add:
+| Variable       | Description          |
+| -------------- | -------------------- |
+| `VITE_API_URL` | Backend API base URL |
 
-```
-DATABASE_URL        = <Internal Database URL from Step 2>
-SECRET_KEY          = <generate a random 32+ character string>
-ALGORITHM           = HS256
-ACCESS_TOKEN_EXPIRE_MINUTES = 10080
-GROQ_API_KEY        = <your Groq API key>
-ALLOWED_ORIGINS     = https://your-frontend-domain.onrender.com
-DEBUG               = False
-```
-
-To generate a secure `SECRET_KEY`:
-```bash
-python -c "import secrets; print(secrets.token_hex(32))"
-```
-
-#### Step 5 — Deploy
-
-Click **Deploy Latest Commit**. Render will:
-1. Build the Docker image
-2. Run `alembic upgrade head` automatically (from the Dockerfile CMD)
-3. Start the FastAPI server
-
-Your API will be live at `https://adventure-game-api.onrender.com`
-Docs at `https://adventure-game-api.onrender.com/docs`
-
----
-
-### Deploy Frontend to Render
-
-#### Step 1 — Update the environment variable
-
-In your frontend `.env.production` (or set during build):
-```
-VITE_API_URL=https://adventure-game-api.onrender.com/api
-```
-
-#### Step 2 — Create a Static Site on Render
-
-1. Click **New +** → **Static Site**
-2. Connect your repository
-3. Configure:
-   - **Name:** `adventure-game-frontend`
-   - **Root Directory:** `frontend`
-   - **Branch:** `main`
-   - **Build Command:** `npm install && npm run build`
-   - **Publish Directory:** `dist`
-4. Under **Environment Variables**, add:
-   ```
-   VITE_API_URL = https://adventure-game-api.onrender.com/api
-   ```
-5. Add a **Rewrite Rule** for React Router (single-page app):
-   - **Source:** `/*`
-   - **Destination:** `/index.html`
-   - **Action:** Rewrite
-
-   This is critical — without it, refreshing any page other than `/` will return a 404.
-
-6. Click **Create Static Site**
-
-Your frontend will be live at `https://adventure-game-frontend.onrender.com`
-
-#### Step 3 — Update CORS on the backend
-
-Go back to your backend Web Service → **Environment** and update:
-```
-ALLOWED_ORIGINS = https://adventure-game-frontend.onrender.com
-```
-
-Then click **Save** — Render will redeploy automatically.
-
----
-
-### Post-deployment checklist
-
-- [ ] `GET https://your-api.onrender.com/health` returns `{"status": "ok"}`
-- [ ] `GET https://your-api.onrender.com/docs` loads Swagger UI
-- [ ] Register a new account on the frontend
-- [ ] Generate a story and play through it
-- [ ] Check the leaderboard populates after finishing a game
-
----
-
-## Environment Variables Reference
-
-### Backend (`.env`)
-
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `DATABASE_URL` | ✅ | — | SQLite path or PostgreSQL URL |
-| `SECRET_KEY` | ✅ | — | JWT signing secret (min 32 chars) |
-| `GROQ_API_KEY` | ✅ | — | Groq API key |
-| `ALGORITHM` | ❌ | `HS256` | JWT algorithm |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | ❌ | `10080` | Token lifetime (7 days) |
-| `ALLOWED_ORIGINS` | ❌ | `""` | Comma-separated CORS origins |
-| `DEBUG` | ❌ | `False` | Debug mode |
-
-### Frontend (`.env`)
-
-| Variable | Required | Description |
-|---|---|---|
-| `VITE_API_URL` | ✅ | Backend API base URL |
+After configuring the required environment variables, deploy the backend to **Render** and the frontend to **Vercel**. The application is production-ready with Docker, automatic database migrations, and CORS configuration.
 
 ---
 
