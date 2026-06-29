@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.core.config import settings
-from app.db.database import SessionLocal
+from app.db.database import SessionLocal, create_tables
 from app.routers import story, job, auth, game_session, stats
 from contextlib import asynccontextmanager
 
@@ -16,6 +16,8 @@ async def lifespan(app: FastAPI):
     from app.models import story as story_model        
     from app.models import game_session as gs_model    
     from app.models import job as job_model 
+
+    create_tables()
 
     # Startup
     try:
