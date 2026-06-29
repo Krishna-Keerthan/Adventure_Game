@@ -231,14 +231,14 @@ Docs available at `http://localhost:8000/docs`
 cd frontend
 
 # Install dependencies
-npm install
+pnpm install
 
 # Create environment file
 cp .env.example .env
 # VITE_API_URL=http://localhost:8000/api
 
 # Start dev server
-npm run dev
+pnpm dev
 ```
 
 App available at `http://localhost:5173`
