@@ -29,6 +29,7 @@ jobs:
           SECRET_KEY: test-secret-key-for-ci-only
           GROQ_API_KEY: not-needed-tests-dont-call-llm
           ALGORITHM: HS256
+          SENTRY_DSN: ""
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
