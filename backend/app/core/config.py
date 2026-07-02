@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
     UPSTASH_REDIS_URL: Optional[str] = None
-    SENTRY_DSN: str = None
+    SENTRY_DSN: Optional[str] = None
 
 
     @field_validator("ALLOWED_ORIGINS", mode="before")

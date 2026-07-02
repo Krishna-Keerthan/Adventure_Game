@@ -19,9 +19,9 @@ def _create_redis_client() -> Optional[Redis]:
     try:
         client = Redis.from_url(
             settings.UPSTASH_REDIS_URL,
-            decode_response = True,
+            decode_responses = True,
             socket_connect_timeout=3,
-            socket_time=3,
+            socket_timeout=3,
             retry_on_timeout=False,
         )
 
@@ -70,7 +70,7 @@ class RedisCache:
             return False
         
         try:
-            serialised = json.dump(value)
+            serialised = json.dumps(value)
             redis_client.setex(key , ttl_seconds, serialised)
             return True
         except (ConnectionError, TimeoutError) as e:

@@ -40,12 +40,13 @@ async def lifespan(app: FastAPI):
         raise
     yield
 
-sentry_sdk.init(
-    dsn=settings.SENTRY_DSN,
-    integrations=[FastApiIntegration, SqlalchemyIntegration],
-    traces_sample_rate=0.1,
-    environment="producition" if not settings.DEBUG else "development",
-)
+if settings.SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=settings.SENTRY_DSN,
+        integrations=[FastApiIntegration(), SqlalchemyIntegration()],
+        traces_sample_rate=0.1,
+        environment="production" if not settings.DEBUG else "development",
+    )
 
 app = FastAPI(
     title="Adventure Game",

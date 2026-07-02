@@ -1,7 +1,7 @@
 import uuid
 from typing import Optional
 from datetime import datetime
-from fastapi import APIRouter, Depends , HTTPException, Cookie , Response, BackgroundTasks
+from fastapi import APIRouter, Depends , HTTPException , Response, BackgroundTasks, Request
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user
@@ -31,7 +31,8 @@ limiter = Limiter(key_func=get_remote_address)
 @router.post("/create", response_model=StoryJobResponse)
 @limiter.limit("3/minute")
 def create_story(
-    request: CreateStoryRequest, 
+    request: Request,
+    story_request: CreateStoryRequest, 
     background_task: BackgroundTasks, 
     response: Response, 
     db: Session = Depends(get_db),
@@ -46,7 +47,7 @@ def create_story(
     job = StoryJob(
         job_id = job_id,
         session_id = session_id,
-        theme = request.theme,
+        theme = story_request.theme,
         status = "Pending"
     )
 
@@ -57,7 +58,7 @@ def create_story(
     background_task.add_task(
         generate_story_task,
         job_id = job_id,
-        theme = request.theme,
+        theme = story_request.theme,
         session_id = session_id
     )
 
@@ -66,8 +67,6 @@ def create_story(
 
 def generate_story_task(job_id: str, theme: str, session_id: str):
     db = SessionLocal()
-
-
     try:
         job = db.query(StoryJob).filter(StoryJob.job_id == job_id).first()
 
