@@ -1,6 +1,7 @@
 import json
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
+import asyncio
 
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
@@ -118,3 +119,17 @@ class StoryGenerator:
 
         db.flush()
         return node
+    
+
+    @classmethod
+    async def generate_story_async(cls, db: Session , session_id: str, theme: str) -> Story:
+        loop = asyncio.get_event_loop()
+        story = await loop.run_in_executor(
+            None,
+            cls.generate_story,
+            db,
+            session_id,
+            theme
+        )
+
+        return story

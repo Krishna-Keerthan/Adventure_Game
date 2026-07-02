@@ -22,7 +22,7 @@ const THEME_SUGGESTIONS = [
   "Viking saga",
 ]
 
-export function Generate() {
+export default function Generate() {
   const [jobId, setJobId] = useState<string | null>(null)
   const [theme, setTheme] = useState("")
   const createStory = useCreateStory()

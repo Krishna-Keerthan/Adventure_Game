@@ -25,6 +25,7 @@ export function useSession(sessionId: number | null) {
     queryKey: ["session", sessionId],
     queryFn: () => sessionsApi.get(sessionId!),
     enabled: !!sessionId,
+    staleTime: 0,
   })
 }
 

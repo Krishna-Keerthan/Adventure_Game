@@ -17,15 +17,19 @@ from app.schemas.job import StoryJobResponse
 
 from app.core.story_generator import StoryGenerator
 
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
 router = APIRouter(
     prefix='/stories',
     tags=["stories"]
 )
 
 
-
+limiter = Limiter(key_func=get_remote_address)
 
 @router.post("/create", response_model=StoryJobResponse)
+@limiter.limit("3/minute")
 def create_story(
     request: CreateStoryRequest, 
     background_task: BackgroundTasks, 

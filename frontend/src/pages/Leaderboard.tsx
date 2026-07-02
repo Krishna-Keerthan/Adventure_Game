@@ -24,7 +24,7 @@ function getRankBg(rank: number) {
   return "border-border/50 bg-background/50"
 }
 
-export function Leaderboard() {
+export default function Leaderboard() {
   const { data, isLoading } = useLeaderboard()
   const { user } = useAuthStore()
 

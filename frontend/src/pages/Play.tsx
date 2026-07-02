@@ -10,7 +10,7 @@ import { useSession, useChooseOption } from "@/hooks/useSessions"
 
 
 
-export function Play() {
+export default function Play() {
   const { sessionId } = useParams<{ sessionId: string }>()
   const navigate = useNavigate()
   const id = Number(sessionId)

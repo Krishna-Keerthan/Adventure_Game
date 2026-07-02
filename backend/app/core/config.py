@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic_settings import BaseSettings
 from pydantic import field_validator, ConfigDict
 
@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
+
+    UPSTASH_REDIS_URL: Optional[str] = None
+    SENTRY_DSN: str = None
 
 
     @field_validator("ALLOWED_ORIGINS", mode="before")

@@ -10,7 +10,7 @@ import { PageWrapper } from "@/components/layout/PageWrapper"
 import { loginSchema, type LoginSchema } from "@/lib/schemas/auth"
 import { useLogin } from "@/hooks/useAuth"
 
-export function Login() {
+export default function Login() {
   const login = useLogin()
 
   const {

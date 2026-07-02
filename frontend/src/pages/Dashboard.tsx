@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import { PageWrapper } from "@/components/layout/PageWrapper"
 import { StatsCard } from "@/components/game/StatsCard"
 import { useMyStats } from "@/hooks/useStats"
@@ -21,13 +22,21 @@ import { useSessionList } from "@/hooks/useSessions"
 import { useAuthStore } from "@/store/auth.store"
 import { formatDate, getStatusColor, getStatusLabel } from "@/lib/utils"
 
-export function Dashboard() {
+export default function Dashboard() {
   const { user } = useAuthStore()
   const { data: stats, isLoading: statsLoading } = useMyStats()
   const { data: sessions, isLoading: sessionsLoading } = useSessionList()
 
   return (
     <PageWrapper>
+
+    {sessionsLoading ? (
+      <div className="space-y-3">
+    {[...Array(5)].map((_, i) => (
+      <Skeleton key={i} className="h-16 w-full rounded-lg" />
+    ))}
+  </div>
+    ):(
       <div className="mx-auto max-w-7xl px-4 pt-24 pb-16 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10">
@@ -181,6 +190,9 @@ export function Dashboard() {
           </Card>
         </motion.div>
       </div>
+    )}
+
+      
     </PageWrapper>
   )
 }

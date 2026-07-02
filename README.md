@@ -8,6 +8,7 @@
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
 ![License](https://img.shields.io/badge/License-MIT-green)
+![Coverage](https://codecov.io/gh/Krishna-Keerthan/Adventure_Game/branch/main/graph/badge.svg)
 
 ---
 

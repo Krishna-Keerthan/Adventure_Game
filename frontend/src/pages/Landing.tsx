@@ -39,7 +39,7 @@ const FEATURES = [
   },
 ]
 
-export function Landing() {
+export default function Landing() {
   const { isAuthenticated } = useAuthStore()
 
   return (

@@ -10,7 +10,7 @@ import { PageWrapper } from "@/components/layout/PageWrapper"
 import { registerSchema, type RegisterSchema } from "@/lib/schemas/auth"
 import { useRegister } from "@/hooks/useAuth"
 
-export function Register() {
+export default function Register() {
   const register_ = useRegister()
 
   const {

@@ -15,6 +15,7 @@ from app.schemas.game_session import (
 )
 from app.core.dependencies import get_current_user
 
+from app.core.cache import cache
 
 router = APIRouter(prefix="/sessions", tags=["game_sessions"])
 
@@ -138,6 +139,9 @@ def choose_option(
     if next_node.is_ending:
         session.status = GameStatus.Win if next_node.is_winning_ending else GameStatus.Lost
         session.completed_at = datetime.now()
+
+        cache.delete(cache.LEADERBOARD_KEY)
+        
 
     db.commit()
     db.refresh(session)

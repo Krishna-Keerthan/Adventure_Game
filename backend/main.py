@@ -6,9 +6,19 @@ from sqlalchemy import text
 from app.core.config import settings
 from app.db.database import SessionLocal, create_tables
 from app.routers import story, job, auth, game_session, stats
+from app.core.cache import cache
+
+import sentry_sdk
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+
 from contextlib import asynccontextmanager
 
-
+limiter = Limiter(key_func=get_remote_address)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -30,6 +40,12 @@ async def lifespan(app: FastAPI):
         raise
     yield
 
+sentry_sdk.init(
+    dsn=settings.SENTRY_DSN,
+    integrations=[FastApiIntegration, SqlalchemyIntegration],
+    traces_sample_rate=0.1,
+    environment="producition" if not settings.DEBUG else "development",
+)
 
 app = FastAPI(
     title="Adventure Game",
@@ -63,10 +79,14 @@ app.include_router(auth.router, prefix=settings.API_PREFIX)
 app.include_router(game_session.router, prefix=settings.API_PREFIX)
 app.include_router(stats.router, prefix=settings.API_PREFIX)
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded , _rate_limit_exceeded_handler)
+
 @app.get("/health")
 def health_check():
     return {
-        "status": "ok"
+        "status": "ok",
+        "redis": "Connected" if cache.is_available() else "Unavailable",
     }
 
 if __name__ == '__main__':
