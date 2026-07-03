@@ -9,8 +9,6 @@ from app.routers import story, job, auth, game_session, stats
 from app.core.cache import cache
 
 import sentry_sdk
-from sentry_sdk.integrations.fastapi import FastApiIntegration
-from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -20,6 +18,14 @@ from contextlib import asynccontextmanager
 
 limiter = Limiter(key_func=get_remote_address)
 
+
+if settings.SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=settings.SENTRY_DSN,
+        traces_sample_rate=0.1,
+        environment="production" if not settings.DEBUG else "development",
+    )
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     from app.models import user as user_model
@@ -27,7 +33,8 @@ async def lifespan(app: FastAPI):
     from app.models import game_session as gs_model    
     from app.models import job as job_model 
 
-    create_tables()
+    if settings.DATABASE_URL.startswith("sqlite"):
+        create_tables()
 
     # Startup
     try:
@@ -40,18 +47,10 @@ async def lifespan(app: FastAPI):
         raise
     yield
 
-if settings.SENTRY_DSN:
-    sentry_sdk.init(
-        dsn=settings.SENTRY_DSN,
-        integrations=[FastApiIntegration(), SqlalchemyIntegration()],
-        traces_sample_rate=0.1,
-        environment="production" if not settings.DEBUG else "development",
-    )
-
 app = FastAPI(
-    title="Adventure Game",
+    title="QuestCraft",
     lifespan=lifespan,
-    description="Choose-your-own-adventure game powered by LLMs",
+    description="AI-powered choose your own adventure",
     version="0.1.0",
     docs_url='/docs',
     redoc_url='/redoc'
@@ -64,6 +63,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded , _rate_limit_exceeded_handler)
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request , exc: Exception):
@@ -80,14 +82,14 @@ app.include_router(auth.router, prefix=settings.API_PREFIX)
 app.include_router(game_session.router, prefix=settings.API_PREFIX)
 app.include_router(stats.router, prefix=settings.API_PREFIX)
 
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded , _rate_limit_exceeded_handler)
+
 
 @app.get("/health")
 def health_check():
     return {
         "status": "ok",
         "redis": "Connected" if cache.is_available() else "Unavailable",
+        "environment": "production" if not settings.DEBUG else "development",
     }
 
 if __name__ == '__main__':
