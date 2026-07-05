@@ -21,7 +21,7 @@ from locust import HttpUser, task, between, events
 
 
 def random_string(length: int = 8) -> str:
-    return "".join(random.choices(string.ascii_lowercase, k=length))
+    return "".join(random.choices(string.ascii_lowercase + string.digits, k=length))
 
 
 class QuestCraftUser(HttpUser):
@@ -40,8 +40,9 @@ class QuestCraftUser(HttpUser):
         self.token = None
         self.session_id = None
         self.story_id = None
+        self.last_job_id = None
 
-        username = f"load_{random_string(6)}"
+        username = f"load{random_string(6)}"
         email = f"{username}@loadtest.com"
         password = "LoadTest1"
 
@@ -54,7 +55,7 @@ class QuestCraftUser(HttpUser):
                 self.token = response.json().get("access_token")
                 response.success()
             else:
-                response.failure(f"Registration failed: {response.status_code}")
+                response.failure(f"Registration failed: ({response.status_code}): {response.text}")
 
     def _headers(self) -> dict:
         return {"Authorization": f"Bearer {self.token}"} if self.token else {}
