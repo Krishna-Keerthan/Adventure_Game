@@ -43,7 +43,7 @@ class RedisCache:
     - Degrades gracefully when Redis is unavailable
     """
 
-    LEADERBOARD_KEY = "leaderboard:global"
+    LEADERBOARD_KEY = "leaderboard:global:v2"
     LEADERBOARD_TTL = 60 * 5
 
     @staticmethod
