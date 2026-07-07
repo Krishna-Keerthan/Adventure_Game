@@ -2,6 +2,7 @@ import { motion } from "motion/react"
 import { Trophy, Skull, RotateCcw, LayoutDashboard } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
+import { GoldDivider } from "@/components/ui/GoldDivider"
 
 interface GameEndScreenProps {
   isWin: boolean
@@ -10,86 +11,81 @@ interface GameEndScreenProps {
   storyId: number
 }
 
-export function GameEndScreen({
-  isWin,
-  storyTitle,
-  content,
-  storyId,
-}: GameEndScreenProps) {
+export function GameEndScreen({ isWin, storyTitle, content, storyId }: GameEndScreenProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="flex flex-col items-center justify-center text-center space-y-6 py-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="flex flex-col items-center text-center space-y-8 py-8"
     >
+      {/* Icon */}
       <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-        className={`relative flex h-24 w-24 items-center justify-center rounded-full border-2 ${
+        initial={{ scale: 0, rotate: -20 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ delay: 0.2, type: "spring", stiffness: 160, damping: 14 }}
+        className={`relative flex h-28 w-28 items-center justify-center rounded-full border-2 ${
           isWin
-            ? "border-emerald-500/50 bg-emerald-500/10"
-            : "border-red-500/50 bg-red-500/10"
+            ? "border-primary/50 bg-primary/10 glow-gold"
+            : "border-crimson/50 bg-crimson/10 glow-crimson"
         }`}
       >
-        {isWin ? (
-          <Trophy className="h-12 w-12 text-emerald-400" />
-        ) : (
-          <Skull className="h-12 w-12 text-red-400" />
-        )}
-        <div
-          className={`absolute inset-0 rounded-full ${
-            isWin ? "bg-emerald-500/10" : "bg-red-500/10"
-          } blur-xl`}
-        />
+        {isWin
+          ? <Trophy className="h-14 w-14 text-primary" />
+          : <Skull className="h-14 w-14 text-crimson" />
+        }
+        <div className={`absolute inset-0 rounded-full blur-xl opacity-30 ${
+          isWin ? "bg-primary" : "bg-crimson"
+        }`} />
       </motion.div>
 
+      {/* Title */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="space-y-2"
-      >
-        <h2
-          className={`text-3xl font-bold ${
-            isWin ? "text-emerald-400" : "text-red-400"
-          }`}
-        >
-          {isWin ? "Victory!" : "Defeated"}
-        </h2>
-        <p className="text-muted-foreground text-sm">{storyTitle}</p>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="max-w-md rounded-xl border border-border/50 bg-card/50 p-5"
+        className="space-y-1"
       >
-        <p className="text-foreground/80 leading-relaxed">{content}</p>
+        <h2
+          className={`text-3xl sm:text-4xl font-bold tracking-widest ${
+            isWin ? "text-primary text-glow-gold" : "text-crimson text-glow-crimson"
+          }`}
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          {isWin ? "VICTORY" : "DEFEATED"}
+        </h2>
+        <p className="text-sm text-muted-foreground tracking-wider">{storyTitle}</p>
       </motion.div>
 
+      <GoldDivider />
+
+      {/* Final story text */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.6 }}
+        className="max-w-lg border-gold rounded-xl bg-card/60 p-6 text-left"
+      >
+        <p className="text-foreground/80 leading-relaxed font-light">{content}</p>
+      </motion.div>
+
+      {/* Actions */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
         className="flex flex-col sm:flex-row gap-3"
       >
-        <Button
-          asChild
-          variant="outline"
-          className="flex items-center gap-2"
-        >
+        <Button variant="outline" className="border-border/50 hover:border-primary/50 text-xs tracking-wider" asChild>
           <Link to={`/story/${storyId}`}>
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="h-3.5 w-3.5 mr-2" />
             Play Again
           </Link>
         </Button>
-        <Button asChild className="flex items-center gap-2 glow">
+        <Button className="glow-gold text-xs tracking-wider bg-primary text-primary-foreground" asChild>
           <Link to="/dashboard">
-            <LayoutDashboard className="h-4 w-4" />
-            Dashboard
+            <LayoutDashboard className="h-3.5 w-3.5 mr-2" />
+            Return to Keep
           </Link>
         </Button>
       </motion.div>

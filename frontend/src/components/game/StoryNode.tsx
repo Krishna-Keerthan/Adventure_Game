@@ -1,37 +1,44 @@
 import { motion } from "motion/react"
-import { ScrollText } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Scroll } from "lucide-react"
+import { TypewriterText } from "./TypewriterText"
 
 interface StoryNodeProps {
   content: string
   nodeNumber?: number
+  onComplete?: () => void
 }
 
-export function StoryNodeDisplay({ content, nodeNumber }: StoryNodeProps) {
+export function StoryNodeDisplay({ content, nodeNumber, onComplete }: StoryNodeProps) {
   return (
     <motion.div
       key={nodeNumber}
-      initial={{ opacity: 0, scale: 0.97 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, ease: "easeOut" }}
+      className="border-gold rounded-xl bg-card/90 backdrop-blur-sm p-8"
     >
-      <Card className="gradient-border bg-card/80 backdrop-blur-sm">
-        <CardContent className="p-6 sm:p-8">
-          <div className="flex items-start gap-3 mb-4">
-            <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/20 border border-primary/30">
-              <ScrollText className="h-4 w-4 text-primary" />
-            </div>
-            <div>
-              <p className="text-xs font-medium text-primary/70 uppercase tracking-wider mb-1">
-                Story
-              </p>
-            </div>
-          </div>
-          <p className="text-foreground/90 leading-relaxed text-base sm:text-lg">
-            {content}
-          </p>
-        </CardContent>
-      </Card>
+      {/* Header ornament */}
+      <div className="flex items-center gap-3 mb-6">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 border border-primary/30">
+          <Scroll className="h-4 w-4 text-primary" />
+        </div>
+        <div className="flex-1 h-px bg-gradient-to-r from-primary/40 to-transparent" />
+        <div className="h-1 w-1 rounded-full bg-primary/40" />
+      </div>
+
+      <p className="text-foreground/90 leading-[1.9] text-base sm:text-lg font-light">
+        <TypewriterText
+          text={content}
+          speed={22}
+          onComplete={onComplete}
+        />
+      </p>
+
+      {/* Footer ornament */}
+      <div className="flex items-center gap-3 mt-6">
+        <div className="h-1 w-1 rounded-full bg-primary/40" />
+        <div className="flex-1 h-px bg-gradient-to-l from-primary/40 to-transparent" />
+      </div>
     </motion.div>
   )
 }

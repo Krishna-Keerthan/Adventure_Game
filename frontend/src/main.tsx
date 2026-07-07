@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client"
 import "./index.css"
 import App from "./App.tsx"
 import * as Sentry from "@sentry/react"
+import "./store/theme.store.ts"
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
