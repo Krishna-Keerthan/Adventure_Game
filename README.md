@@ -14,7 +14,7 @@
 
 *Enter a theme. An ancient intelligence weaves your story. Every choice echoes through the ages.*
 
-**[▶ Play Now](https://adventure-game-pearl.vercel.app/) · [API Docs](https://adventure-game-api-5rhm.onrender.com/docs) · [Report Bug](https://github.com/Krishna-Keerthan/adventure-game/issues)**
+**[▶ Play Now](https://adventure-game-pearl.vercel.app/) · [API Docs](https://adventure-game-api-5rhm.onrender.com/docs) · [Report Bug](https://github.com/Krishna-Keerthan/Adventure_Game/issues)**
 
 </div>
 
